@@ -54,12 +54,26 @@ class ViewController: UIViewController {
     
     var swipeRight: UISwipeGestureRecognizer!
     var swipeLeft: UISwipeGestureRecognizer!
-    
+    var index = 0
+    var didSwipe = false
     var foodChoices = ["Chinese", "Mexican", "Italian", "Japanese", "Mediterranean", "French", "Thai", "Spanish", "Indian", "Greek", "BBQ", "Burgers", "Sandwich", "Seafood", "Pizza", "Steak"]
-  
+    
+    //var maxIndex: Int = 0
+    //        let randomIndex = Int(arc4random_uniform(maxIndex))
+    //var currIndex = 0
+//    if startingIndex == maxIndex {
+//    startingIndex = 0
+//    }
+    
+//    func getMaxInd() {
+//        maxIndex = foodChoices.count
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+//        getMaxInd() // set the initial max index
+//        func getMaxIndex() {
+//        maxIndex = foodChoices.count
         
         //let foodCategoryChoice = foodCategory.text
         self.foodPic.contentMode = .scaleAspectFit
@@ -81,24 +95,69 @@ class ViewController: UIViewController {
     }
     
     @objc func swipedToRight() {
-        generateAnswer()
-    }
-    @objc func swipedToLeft() {
-        let randFood = foodCategory.text!
-        if let index = foodChoices.index(of:randFood) {
-            foodChoices.remove(at: index)
+        if didSwipe == false {
+            didSwipe = true
         }
         generateAnswer()
+        // Increment the index
+        
+        //currIndex += 1
     }
     
+    @objc func swipedToLeft() {
+        if didSwipe == false {
+            didSwipe = true
+        } else {
+            //let randFood = foodCategory.text!
+           // print("Left: \(randFood)")
+            
+            foodChoices.remove(at: index)
+        }
+        
+        
+        print("Swiped Left on Food Choices: \(foodChoices)")
+        
+        // FIXME: get the index value and pass it in
+        index -= 1
+        generateAnswer()
+        
+        
+        // Set the max index again
+        // Get the currentIndex
+        // Increment the index Set the current index value
+    }
     
+    func selectedChoices(arrayOfFood: [String]) {
+        var selectedFood = [String]()
+        
+        let randFood = foodCategory.text!
+        print("Right: \(randFood)")
+        
+        if !selectedFood.contains(randFood) {
+            selectedFood.append(randFood)
+            
+            
+            
+        }
+        
+        print("Swiped right on Food Choices: \(foodChoices)")
+        print("Food Choices: \(foodChoices.count)")
+    }
+    func updateIndex() {
+        index += 1
+        if index >= foodChoices.count {
+            index = 0
+        }
+    }
     func generateAnswer() {
-        let maxIndex = UInt32(foodChoices.count)
-        let randomIndex = Int(arc4random_uniform(maxIndex))
+        updateIndex()
+        let maxIndex = foodChoices.count
+        let randomIndex = Int(arc4random_uniform(UInt32(maxIndex)))
         foodPic.isHidden = false
         leftButtonHeight.constant = 0
         rightButtonHeight.constant = 0
         if foodChoices.count == 2 {
+            
             print("\(foodChoices)")
             lastFoodRight.text = foodChoices[0]
             lastFoodLeft.text = foodChoices[1]
@@ -116,8 +175,8 @@ class ViewController: UIViewController {
             
         if foodChoices.count == 1 {
             print("\(foodChoices)")
-            //lastFoodRight.text = foodChoices[0]
-            //lastFoodLeft.text = foodChoices[1]
+            lastFoodRight.text = foodChoices[0]
+            lastFoodLeft.text = foodChoices[1]
             foodCategoryHeight.constant = 48
             rightButtonClicked.isHidden = true
             leftButtonClicked.isHidden = true
@@ -128,9 +187,9 @@ class ViewController: UIViewController {
         }
 
         print("\(foodChoices.count)")
-        
-        foodPic.image = UIImage(named: foodChoices[randomIndex])
-        foodCategory.text = foodChoices[randomIndex]
+        print("\(foodChoices)")
+        foodPic.image = UIImage(named: foodChoices[index])
+        foodCategory.text = foodChoices[index]
 
     }
     
